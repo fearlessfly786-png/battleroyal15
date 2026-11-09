@@ -1,0 +1,535 @@
+/* ==========================================================================
+   LUCK ROYALE PANEL — full-screen royale screen.
+   A 1:1 structural twin of the PET / CHARACTER screens: it reuses
+   petPanel.css verbatim for the shared design language (pet-screen base,
+   nameplate, vertical image rail, big stage preview, tabbed details
+   panel, yellow action button, bottom switch, dialogs, gold particles)
+   and only adds the luck-royale specifics here, all scoped with
+   `.luck-screen` so the pet and character panels stay pixel-identical:
+
+     - the same enlarged preview box as the character screen
+       (the royale key-art stands on the pedestal like a character)
+     - per-royale preview sizing (the per-character rule equivalent)
+     - the spin wiggle + result line under the preview
+     - grand-prize rows / spin record rows for the details panel
+     - mobile flow tweaks (petPanel.css already flows the shared chrome)
+
+   MIRRORED LAYOUT: the luck screen flips the pet screen horizontally —
+   the live stage view (art, nameplate, aura, shadow, particles, result
+   line) sits on the RIGHT half, the details cards + SPIN button move to
+   the LEFT edge, and the vertical image rail becomes the far-right
+   selector column. Every mirror value is the exact horizontal inverse
+   of the petPanel.css original, so the design language stays 1:1.
+   ========================================================================== */
+
+/* ------------------------- preview (same to same) ----------------------- */
+/* Same enlarged stage box the character screen uses: 54% tall / 33% wide.
+   The preview art itself is NOT re-sized here — the per-model rules from
+   petPanel.css (.pet-model-panda / -draco / -ottero / -neon at 94% / 93% /
+   94% / 89%, rockie on the 100% base) apply verbatim, so the royales
+   stand exactly like the pets do in the kennel. */
+
+.luck-screen .pet-display {
+  left: 59.2%; /* mirror of 40.8% — live view on the right half */
+  height: 54%;
+  width: 33%;
+}
+
+/* --------------------------- mirrored layout ---------------------------- */
+/* Horizontal mirror of the pet-screen geometry (see header note). Scoped
+   to .luck-screen so the pet and character panels keep their original
+   left-side stage / right-side details layout untouched. */
+
+.luck-screen .pet-nameplate {
+  left: 51.3%; /* mirror of 25.5% (+ 23.2% width) — over the right-side view */
+}
+.luck-screen .pet-shadow {
+  left: 59.2%; /* mirror of 40.8% */
+}
+.luck-screen .pedestal-aura {
+  left: 59%; /* mirror of 41% */
+}
+.luck-screen .gold-particles {
+  left: 42%; /* mirror of 24% (+ 34% width) */
+}
+.luck-screen .pet-rail {
+  left: auto;
+  right: 1.45%; /* mirror of left: 1.45% — far-right selector column */
+}
+.luck-screen .details-zone {
+  right: auto;
+  left: 1.1%; /* mirror of right: 1.1% — cards + SPIN on the left edge */
+}
+.luck-screen .hide-pet {
+  left: auto;
+  right: 11.7%; /* mirror of left: 11.7% — quick-spin under the view */
+}
+/* the selection arrow now points LEFT, out of the rail toward the stage */
+.luck-screen .selected-arrow {
+  right: auto;
+  left: calc(-41 * var(--u));
+  transform: translateY(-50%) scaleX(-1);
+}
+/* tile corner bracket + jackpot badge flip to the stage side too */
+.luck-screen .selection-corner {
+  right: auto;
+  left: calc(-4 * var(--u));
+  border-right: 0;
+  border-left: calc(3 * var(--u)) solid #fff;
+}
+.luck-screen .equipped-mark {
+  right: auto;
+  left: calc(4 * var(--u));
+}
+
+/* --------------------------- spin + result ------------------------------ */
+
+.luck-screen .pet-character.is-spinning {
+  pointer-events: none;
+}
+
+/* -a/-b variants so repeating the spin restarts the animation. */
+@keyframes luck-spin-a {
+  0% { transform: rotate(0) scale(1); }
+  20% { transform: rotate(-9deg) scale(1.05); }
+  40% { transform: rotate(8deg) scale(0.97); }
+  60% { transform: rotate(-6deg) scale(1.04); }
+  80% { transform: rotate(4deg) scale(0.99); }
+  100% { transform: rotate(0) scale(1); }
+}
+@keyframes luck-spin-b {
+  0% { transform: rotate(0) scale(1); }
+  20% { transform: rotate(-9deg) scale(1.05); }
+  40% { transform: rotate(8deg) scale(0.97); }
+  60% { transform: rotate(-6deg) scale(1.04); }
+  80% { transform: rotate(4deg) scale(0.99); }
+  100% { transform: rotate(0) scale(1); }
+}
+
+/* result line — under the preview, aligned with it like a subtitle */
+.luck-screen .luck-result {
+  position: absolute;
+  left: 59.2%; /* mirror of 40.8% — under the right-side view */
+  bottom: 10.6%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 30%;
+  margin: 0;
+  text-align: center;
+  font-size: calc(27 * var(--u));
+  font-weight: 700;
+  letter-spacing: calc(1.2 * var(--u));
+  color: #ffffffa6;
+  z-index: 5;
+  pointer-events: none;
+}
+.luck-result.is-win {
+  color: #ffd83d;
+  text-shadow: 0 0 calc(24 * var(--u)) #ffc61a73;
+  animation: luck-pop 0.32s ease-out;
+}
+.luck-result.is-spinning {
+  color: #f4f1ff;
+}
+
+@keyframes luck-pop {
+  0% {
+    transform: translateX(-50%) scale(0.6);
+    opacity: 0;
+  }
+  70% {
+    transform: translateX(-50%) scale(1.12);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* cost chip in the nameplate (where the rename pencil sits on the
+   character screen) */
+.nameplate-cost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(4 * var(--u));
+  width: calc(56 * var(--u));
+  height: calc(43 * var(--u));
+  color: #ffd83d;
+  font-size: calc(23 * var(--u));
+  font-weight: 700;
+  line-height: 1;
+}
+.nameplate-cost svg {
+  width: calc(26 * var(--u));
+  height: calc(26 * var(--u));
+}
+
+/* ------------------- prize pool / record (details panel) ----------------- */
+
+.pool-title {
+  margin: calc(30 * var(--u)) 0 calc(4 * var(--u));
+  font-size: calc(24 * var(--u));
+  font-weight: 700;
+  letter-spacing: calc(1.4 * var(--u));
+  color: #8fa3bf;
+}
+
+/* tab panels fill the remaining height and scroll (emblem + story + pool) */
+.luck-screen .panel-interior {
+  display: flex;
+  flex-direction: column;
+}
+.luck-screen .skill-content,
+.luck-screen .actions-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: calc(14 * var(--u));
+  scrollbar-width: thin;
+  scrollbar-color: #b98a1e66 transparent;
+}
+
+/* ------------------- spin plates (FF-style button pair) ------------------ */
+/* The two angular plates at the bottom of the details card, straight from
+   the reference art: blue "1 SPIN / ◆ cost" and gold "10+1 SPINS /
+   ◆ 10x cost". The light frame is the outer background; ::before paints
+   the gradient inside the same clipped shape (clip-path eats borders). */
+
+.luck-screen .spin-buttons {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: calc(16 * var(--u));
+}
+
+.luck-screen .spin-button {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: calc(84 * var(--u));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(5 * var(--u));
+  padding: calc(8 * var(--u)) calc(10 * var(--u)) calc(11 * var(--u));
+  color: #ffffff;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+}
+.luck-screen .spin-button:hover {
+  transform: translateY(calc(-2 * var(--u)));
+}
+.luck-screen .spin-button:active {
+  transform: scale(0.965);
+}
+.luck-screen .spin-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+  transform: none;
+}
+.luck-screen .spin-button > span {
+  position: relative;
+  z-index: 1;
+}
+
+/* both plates: proper horizontal rectangles with the top-left and
+   bottom-right corners cut — light frame outside, gradient inside */
+.luck-screen .spin-single,
+.luck-screen .spin-multi,
+.luck-screen .spin-single::before,
+.luck-screen .spin-multi::before {
+  clip-path: polygon(
+    calc(16 * var(--u)) 0,
+    100% 0,
+    100% calc(100% - 16 * var(--u)),
+    calc(100% - 16 * var(--u)) 100%,
+    0 100%,
+    0 calc(16 * var(--u))
+  );
+}
+
+/* blue 1 SPIN — cyan frame, deep-blue fill */
+.luck-screen .spin-single {
+  background: linear-gradient(180deg, #eafaff, #9adcff 12%, #2f9cec 62%, #6fd2ff);
+  filter: drop-shadow(0 calc(5 * var(--u)) calc(12 * var(--u)) #0e6fd099);
+}
+.luck-screen .spin-single::before {
+  content: "";
+  position: absolute;
+  inset: calc(3 * var(--u));
+  background: linear-gradient(180deg, #56c1fb, #1e8ce7 48%, #0d6bd0);
+}
+
+/* gold 10+1 SPINS — gold frame, amber fill */
+.luck-screen .spin-multi {
+  background: linear-gradient(180deg, #fffbe6, #ffe985 12%, #ffc01f 62%, #ffe27a);
+  filter: drop-shadow(0 calc(5 * var(--u)) calc(12 * var(--u)) #d98e0099);
+}
+.luck-screen .spin-multi::before {
+  content: "";
+  position: absolute;
+  inset: calc(3 * var(--u));
+  background: linear-gradient(180deg, #ffd44d, #fdb71a 48%, #ef9d00);
+}
+
+.luck-screen .spin-title {
+  font-family: var(--font-anton), var(--font-barlow-cond), sans-serif;
+  font-size: calc(32 * var(--u));
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: calc(1 * var(--u));
+  white-space: nowrap;
+}
+.luck-screen .spin-single .spin-title {
+  text-shadow: 0 calc(2 * var(--u)) #08315e;
+}
+.luck-screen .spin-multi .spin-title {
+  text-shadow: 0 calc(2 * var(--u)) #7a4d00;
+}
+.luck-screen .spin-cost {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  font-size: calc(24 * var(--u));
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 calc(2 * var(--u)) #00000055;
+}
+.luck-screen .spin-cost svg {
+  width: calc(25 * var(--u));
+  height: calc(25 * var(--u));
+}
+.luck-screen .spin-cost .free {
+  color: #fff8d1;
+}
+
+.prize-row {
+  display: flex;
+  align-items: center;
+  gap: calc(16 * var(--u));
+  padding: calc(11 * var(--u)) 0;
+}
+.prize-row + .prize-row {
+  border-top: calc(1.5 * var(--u)) solid #ffffff14;
+}
+
+.prize-chip {
+  width: calc(66 * var(--u));
+  height: calc(66 * var(--u));
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  color: #ffd83d;
+  background: linear-gradient(150deg, #42300a, #191104 70%);
+  border: calc(2 * var(--u)) solid #b98a1e;
+  box-shadow: inset 0 0 calc(12 * var(--u)) #00000088;
+  clip-path: polygon(
+    12% 0,
+    100% 0,
+    100% 88%,
+    88% 100%,
+    0 100%,
+    0 12%
+  );
+}
+.luck-screen .prize-chip svg {
+  width: calc(32 * var(--u));
+  height: calc(32 * var(--u));
+}
+
+.prize-copy {
+  min-width: 0;
+}
+.prize-copy h3 {
+  margin: 0;
+  font-size: calc(26 * var(--u));
+  line-height: 1.05;
+  color: #ffffff;
+  font-weight: 700;
+}
+.prize-copy p {
+  margin: calc(4 * var(--u)) 0 0;
+  font-size: calc(19 * var(--u));
+  line-height: 1.1;
+  color: #b9c6dd;
+}
+.prize-copy p strong {
+  color: #ffe100;
+  font-weight: 700;
+}
+
+/* spin record */
+.record-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: calc(14 * var(--u));
+  padding: calc(10 * var(--u)) 0;
+  border-bottom: calc(1.5 * var(--u)) solid #ffffff10;
+  font-size: calc(22 * var(--u));
+  font-weight: 700;
+  color: #f4f1ff;
+}
+.record-row small {
+  display: block;
+  margin-top: calc(2 * var(--u));
+  font-size: calc(16 * var(--u));
+  font-weight: 600;
+  letter-spacing: calc(0.5 * var(--u));
+  color: #8fa3bf;
+}
+.record-row time {
+  flex-shrink: 0;
+  font-size: calc(17 * var(--u));
+  font-weight: 600;
+  color: #8fa3bf;
+  letter-spacing: calc(0.4 * var(--u));
+}
+.record-empty {
+  margin: calc(18 * var(--u)) 0 0;
+  font-size: calc(21 * var(--u));
+  line-height: 1.25;
+  color: #b9c6dd;
+}
+
+/* -------------------------- mobile (flow layout) ------------------------- */
+
+@media (max-width: 1024px) and (orientation: portrait) {
+  .luck-screen .pet-stage {
+    height: 460px;
+  }
+  .luck-screen .pet-display {
+    left: 50%; /* un-mirror: portrait flow centers everything */
+    height: 310px;
+    bottom: 52px; /* room for the result line under the preview */
+  }
+  .luck-screen .luck-result {
+    left: 50%;
+    bottom: 12px;
+    max-width: 92%;
+    font-size: 22px;
+  }
+  .luck-result.is-win {
+    animation: none;
+  }
+  /* un-mirror the desktop side positions — the flow layout stacks
+     vertically, so the mirrored lefts/rights must be neutralized */
+  .luck-screen .pet-nameplate,
+  .luck-screen .pet-shadow,
+  .luck-screen .pedestal-aura {
+    left: 50%;
+  }
+  .luck-screen .gold-particles {
+    left: 10%;
+  }
+  .luck-screen .pet-rail,
+  .luck-screen .details-zone,
+  .luck-screen .hide-pet {
+    left: auto;
+    right: auto;
+  }
+  .luck-screen .selection-corner {
+    left: auto;
+    right: 0;
+    border-left: 0;
+    border-right: 2px solid #fff;
+  }
+  .luck-screen .equipped-mark {
+    left: auto;
+    right: 2px;
+  }
+  .nameplate-cost {
+    width: 46px;
+    height: 34px;
+    font-size: 19px;
+  }
+  .nameplate-cost svg {
+    width: 21px;
+    height: 21px;
+  }
+  .pool-title {
+    margin: 20px 0 4px;
+    font-size: 19px;
+  }
+  /* the two spin plates: stack the card first, plates under it */
+  .luck-screen .details-zone {
+    flex-direction: column;
+  }
+  .luck-screen .spin-buttons {
+    gap: 10px;
+  }
+  .luck-screen .spin-button {
+    min-height: 54px;
+    gap: 2px;
+    padding: 5px 8px 7px;
+  }
+  .luck-screen .spin-title {
+    font-size: 20px;
+  }
+  .luck-screen .spin-cost {
+    font-size: 15px;
+    gap: 4px;
+  }
+  .luck-screen .spin-cost svg {
+    width: 15px;
+    height: 15px;
+  }
+  .prize-chip {
+    width: 48px;
+    height: 48px;
+    border-width: 1px;
+  }
+  .luck-screen .prize-chip svg {
+    width: 24px;
+    height: 24px;
+  }
+  .prize-copy h3 {
+    font-size: 22px;
+  }
+  .prize-copy p {
+    font-size: 16px;
+  }
+  .record-row {
+    font-size: 19px;
+  }
+  .record-row small {
+    font-size: 14px;
+  }
+  .record-row time {
+    font-size: 15px;
+  }
+  .record-empty {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 370px) and (orientation: portrait) {
+  .luck-screen .pet-stage {
+    height: 420px;
+  }
+  .luck-screen .pet-display {
+    height: 280px;
+    bottom: 50px;
+  }
+  .luck-screen .spin-button {
+    min-height: 48px;
+  }
+  .luck-screen .spin-title {
+    font-size: 18px;
+  }
+}
+
+/* short landscape screens */
+@media (max-height: 540px) and (orientation: landscape) {
+  .luck-screen .pet-display {
+    height: 56%;
+  }
+  .luck-screen .luck-result {
+    bottom: 8.6%;
+    font-size: calc(22 * var(--u));
+  }
+}

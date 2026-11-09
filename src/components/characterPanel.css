@@ -1,0 +1,64 @@
+/* ==========================================================================
+   CHARACTER PANEL — per-character sizing tweaks.
+   The panel reuses petPanel.css verbatim (pixel-identical twin of the pet
+   screen); this file adds the character equivalent of the per-pet model
+   sizing rules (.pet-model-panda etc.) — plus larger character PREVIEW
+   sizes. Every override below is scoped with `.character-screen`
+   (root class unique to the character screen), so the pet panel keeps
+   its original sizes untouched.
+
+   Preview enlargement (player request — bigger character render on the
+   stage right of the vertical character rail):
+     - desktop: stage box grows 46.5% -> 54% tall / 29% -> 33% wide
+     - per-character img heights bumped to match (112% / 118%)
+     - mobile portrait + short-landscape equivalents bumped the same way
+   ========================================================================== */
+
+/* ------------------------------ desktop --------------------------------- */
+.character-screen .pet-display {
+  height: 54%;
+  width: 33%;
+}
+
+.pet-model-kelly .pet-character img {
+  height: 112%;
+}
+.pet-model-andrew .pet-character img {
+  height: 112%;
+}
+.pet-model-ford .pet-character img {
+  height: 112%;
+}
+.pet-model-nikita .pet-character img {
+  height: 112%;
+}
+.pet-model-hayato .pet-character img {
+  height: 118%;
+}
+
+/* --------------------- mobile portrait (flow layout) -------------------- */
+@media (max-width: 1024px) and (orientation: portrait) {
+  .character-screen .pet-stage {
+    height: 440px;
+  }
+  .character-screen .pet-display {
+    height: 330px;
+    bottom: 10px;
+  }
+}
+
+@media (max-width: 370px) and (orientation: portrait) {
+  .character-screen .pet-stage {
+    height: 400px;
+  }
+  .character-screen .pet-display {
+    height: 295px;
+  }
+}
+
+/* -------------------------- short landscape ----------------------------- */
+@media (max-height: 540px) and (orientation: landscape) {
+  .character-screen .pet-display {
+    height: 56%;
+  }
+}
